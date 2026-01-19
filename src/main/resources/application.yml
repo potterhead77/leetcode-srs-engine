@@ -1,0 +1,63 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: leetcode-srs
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/leetcode_srs}
+    # Username and password should be part of DATABASE_URL for Neon,
+    # but we keep these as optional fallbacks or empty.
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:skipped_email}
+    password: ${MAIL_PASSWORD:skipped_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  level:
+    com.leetcoder: INFO
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  health:
+    mail:
+      enabled: false
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      leetcode:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+  ratelimiter:
+    instances:
+      leetcode:
+        limitForPeriod: 5
+        limitRefreshPeriod: 1s
+        timeoutDuration: 500ms
