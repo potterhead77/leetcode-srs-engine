@@ -1,4 +1,4 @@
-# LeetCode SRS (MVP)
+# LeetCode SRS
 
 A Spaced Repetition System for LeetCode problems, built with Spring Boot, PostgreSQL, and Clean Architecture.
 
