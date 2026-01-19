@@ -5,34 +5,13 @@ A Spaced Repetition System for LeetCode problems, built with Spring Boot, Postgr
 ## Features
 - **Smart Sync**: Automatically pulls your recent LeetCode submissions.
 - **SM-2 Algorithm**: Schedules reviews based on performance (Spaced Repetition).
-- **Email Reminders**: Daily notifications for due problems.
-- **Resilience**: Protects against LeetCode API rate limits.
-
-## Deployment Guide (Render + Neon)
-
-### 1. Database (Neon.tech)
-1. Create a new project on [Neon.tech](https://neon.tech).
-2. Copy the **Direct Connection String** (e.g., `postgresql://user:pass@ep-xyz.aws.neon.tech/neondb?sslmode=require`).
-
-### 2. Application (Render.com)
-1. Create a new **Web Service** on Render.
-2. Connect your repository.
-3. Select **Docker** as the Runtime.
-4. Add the following **Environment Variables**:
-
-| Variable | Value |
-|----------|-------|
-| `DATABASE_URL` | Your Neon Connection String |
-| `MAIL_USERNAME` | Your Gmail Address |
-| `MAIL_PASSWORD` | Your App Password (not login password) |
-| `APP_SYNC_CRON` | (Optional) Cron expression, e.g. `0 0 */6 * * *` |
-
-5. Deploy!
+- **Email Reminders**: Daily notifications for due problems (via Gmail).
+- **Resilience**: Protects against LeetCode API rate limits using Circuit Breakers.
 
 ## API Endpoints
-The API is public (no authentication required).
+The API is public (no authentication required). A **Postman Collection** (`leetcode_srs.postman_collection.json`) is included in the root directory for easy testing.
 
-- **Sync User**: `POST /api/admin/sync/{userId}`
+### User Management
 - **Create User**: `POST /api/admin/users`
   ```json
   {
@@ -40,8 +19,75 @@ The API is public (no authentication required).
     "leetcodeUsername": "your_handle"
   }
   ```
+- **Sync User**: `POST /api/admin/sync/{userId}`
+  - Fetches submissions and creates study items.
+
+### Spaced Repetition
+- **Review Item**: `POST /api/reviews`
+  - Submits a qualty rating (0-5) to update the item's schedule.
+  ```json
+  {
+    "studyItemId": 1,
+    "quality": 5
+  }
+  ```
 - **Reset Progress**: `POST /api/admin/reset/{userId}`
 
-## Local Development
-1. `docker-compose up -d` (Starts Postgres)
-2. `mvn spring-boot:run`
+### System
+- **Trigger Reminders**: `POST /api/admin/reminders`
+  - Manually fires the daily email job.
+
+## Local Development Guide
+
+### 1. Prerequisites
+- **Java 21**
+- **Docker Desktop** (for PostgreSQL)
+- **Maven**
+- **VS Code** (Recommended) or IntelliJ
+
+### 2. Start Local Database
+Use Docker Compose to spin up the PostgreSQL database:
+```bash
+docker-compose up -d
+```
+This starts a database at `localhost:5432`.
+*   **User**: `postgres`
+*   **Password**: `password`
+
+### 3. Configure Environment
+**Important**: The application defaults to a Cloud Database configuration. To run locally, you **MUST** override the following environment variables.
+
+#### Recommended: VS Code (`.vscode/launch.json`)
+Add this `env` block to your run configuration:
+```json
+"env": {
+    "DATABASE_URL": "jdbc:postgresql://localhost:5432/leetcode_srs",
+    "DB_USERNAME": "postgres",
+    "DB_PASSWORD": "password",
+    "MAIL_USERNAME": "your_email@gmail.com",
+    "MAIL_PASSWORD": "your_app_password"
+}
+```
+
+#### Alternative: PowerShell / Terminal
+```powershell
+$env:DATABASE_URL="jdbc:postgresql://localhost:5432/leetcode_srs"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="password"
+$env:MAIL_USERNAME="your_email@gmail.com"
+$env:MAIL_PASSWORD="your_app_password"
+
+mvn spring-boot:run
+```
+
+### 4. Run the Application
+```bash
+mvn spring-boot:run
+```
+The server will start on port **8080**.
+
+### 5. Verify
+*   **Health Check**: `GET http://localhost:8080/actuator/health`
+
+---
+*For cloud deployment instructions (Render + Neon), refer to the [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).*
