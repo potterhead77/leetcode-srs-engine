@@ -9,7 +9,7 @@ A Spaced Repetition System for LeetCode problems, built with Spring Boot, Postgr
 - **Resilience**: Protects against LeetCode API rate limits using Circuit Breakers.
 
 ## API Endpoints
-The API is public (no authentication required). A **Postman Collection** (`leetcode_srs.postman_collection.json`) is included in the root directory for easy testing.
+The API is public (no authentication required)
 
 ### User Management
 - **Create User**: `POST /api/admin/users`
@@ -89,5 +89,3 @@ The server will start on port **8080**.
 ### 5. Verify
 *   **Health Check**: `GET http://localhost:8080/actuator/health`
 
----
-*For cloud deployment instructions (Render + Neon), refer to the [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).*
