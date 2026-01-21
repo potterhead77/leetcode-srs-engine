@@ -91,6 +91,3 @@ The server will start on port **8080**.
 
 
 
----
-*For cloud deployment instructions (Render + Neon), refer to the [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).*
-*For AWS deployment instructions (App Runner + RDS), refer to the [AWS_DEPLOYMENT_GUIDE.md](AWS_DEPLOYMENT_GUIDE.md).*
