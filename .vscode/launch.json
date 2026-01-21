@@ -17,9 +17,10 @@
             "mainClass": "com.leetcoder.LeetCodeSRSApplication",
             "projectName": "backend",
             "env": {
+                "DB_PASSWORD": "npg_SrMQfDFR2Bk4",
                 "MAIL_USERNAME": "nandansanjay35@gmail.com",
                 "MAIL_PASSWORD": "emvv ucgv amji ydpi"
             }
-        }
+        },
     ]
 }
